@@ -15,3 +15,8 @@
 # vendor/
 /.idea/
 /go.sum
+/nacos/log/nacos-sdk.log
+/nacos/log/nacos-sdk.log-202112072100
+/nacos/cache/config/product.json@@dev@@3a6aa0c4-b492-4624-bb59-16cc3f27416f
+/product_srv/biz/nacos/cache/config/product.json@@dev@@3a6aa0c4-b492-4624-bb59-16cc3f27416f
+/product_web/nacos/cache/config/product.json@@dev@@3a6aa0c4-b492-4624-bb59-16cc3f27416f
