@@ -7,20 +7,26 @@ import (
 	"github.com/nacos-group/nacos-sdk-go/common/constant"
 	"github.com/nacos-group/nacos-sdk-go/vo"
 	"github.com/spf13/viper"
+	"os"
 )
 
 var AppConf AppConfig
 var NacosConf NacosConfig
 
-//var ViperConf ViperConfig
-var fileName = "dev-config.yaml"
+//var fileName = "dev-config.yaml"
 
 func initNacos() {
 	v := viper.New()
-	v.SetConfigFile(fileName)
-	v.ReadInConfig()
+	//设置配置文件的名字
+	v.SetConfigName("config")
+	v.AddConfigPath("$GOPATH/src/mic-trainning-lesson/product/")
+	v.SetConfigType("yaml")
+	err := v.ReadInConfig()
+	if err != nil {
+		panic(err)
+	}
 	v.Unmarshal(&NacosConf)
-	fmt.Println(NacosConf)
+	//fmt.Println(NacosConf)
 }
 
 func initFromNacos() {
@@ -56,11 +62,17 @@ func initFromNacos() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(content)
+	//fmt.Println(content)
 	json.Unmarshal([]byte(content), &AppConf)
 }
 
 func init() {
+	getwd, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(`%GOPATH/src/`)
+	fmt.Println(getwd)
 	initNacos()
 	initFromNacos()
 	fmt.Println("初始化完成...")
@@ -72,5 +84,5 @@ type ViperConfig struct {
 	RedisConfig      RedisConfig      `mapstructure:"redis"`
 	ConsulConfig     ConsulConfig     `mapstructure:"consul"`
 	AccountSrvConfig ProductSrvConfig `mapstructure:"account_srv"`
-	AccountWebConfig ProductWebConfig `mapstructure:"account_web"`
+	AccountWebConfig ProductWebConfig `mapstructure:"product_web"`
 }

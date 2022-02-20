@@ -4,7 +4,7 @@ option go_package="/pb";
 
 service ProductService{
   //产品相关
-  rpc ProductList(ProdcutConditionReq) returns (ProductsRes);
+  rpc ProductList(ProductConditionReq) returns (ProductsRes);
   rpc BatchGetProduct(BatchProductIdReq) returns(ProductsRes);
   rpc CreateProduct(CreateProductItem) returns(ProductItemRes);
   rpc DeleteProduct(ProductDelItem) returns(google.protobuf.Empty);
@@ -32,7 +32,7 @@ service ProductService{
 
   //品牌分类
   rpc CategoryBrandList(PagingReq) returns(CategoryBrandListRes);
-  rpc GetCategoryBrandList(CategoryItemReq) returns(BrandItemRes);
+  rpc GetCategoryBrandList(CategoryItemReq) returns(BrandRes);
   rpc CreateCategoryBrand(CategoryBrandReq) returns(CategoryBrandRes);
   rpc DeleteCategoryBrand(CategoryBrandReq) returns(google.protobuf.Empty);
   rpc UpdateCategoryBrand(CategoryBrandReq) returns(google.protobuf.Empty);
@@ -40,8 +40,8 @@ service ProductService{
 
 message CategoryBrandReq{
   int32 id=1;
-  BrandItemRes brand=2;
-  CategoryItemRes category=3;
+  int32 brandId=2;
+  int32 categoryId=3;
 }
 
 message CategoryBrandRes{
@@ -150,7 +150,7 @@ message CreateProductItem{
   int32 id=1;
   string name=2;
   string sn=3;
-  int32 stocks=4;
+  int32 categoryId=4;
   float price=5;
   float realPrice=6;
   string shortDesc=7;
@@ -164,23 +164,14 @@ message CreateProductItem{
   int32 brandId=15;
   int32 favNum=16;
   int32 soldNum=17;
+  bool isShipFree=18;
 }
 
 message BatchProductIdReq{
   repeated int32 ids=1;
 }
 
-message ProdcutConditionReq{
-  int32 minPrice=1;
-  int32 maxPrice=2;
-  bool isPop =3;
-  bool isNew =4;
-  int32 categoryId=5;
-  int32 pageNo=6;
-  int32 pageSize=7;
-  string keyWord=8;
-  int32 brandId=9;
-}
+
 
 message ProductItemRes{
   int32 id = 1;
@@ -193,7 +184,7 @@ message ProductItemRes{
   float price=8;
   float realPrice=9;
   string shortDesc=10;
-  string desc = 11;
+  BrandItemRes brand=11;
   repeated string images=12;
   repeated string descImages=13;
   string coverImage=14;
@@ -202,10 +193,27 @@ message ProductItemRes{
   bool selling=17;
   int64 addTime=18;
   CategoryShortItemRes category = 19;
-  BrandItemRes brand=20;
+
+}
+
+message CategoryShortItemRes{
+  int32 id=1;
+  string name=2;
 }
 
 message ProductsRes{
   int32 total =1;
   repeated ProductItemRes itemList = 2;
+}
+
+message ProductConditionReq{
+  int32 minPrice=1;
+  int32 maxPrice=2;
+  bool isPop =3;
+  bool isNew = 4;
+  int32 categoryId=5;
+  int32 brandId=6;
+  string keyWord=7;
+  int32 pageNo=8;
+  int32 pageSize=9;
 }
