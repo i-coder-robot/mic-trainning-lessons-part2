@@ -57,22 +57,16 @@ func (p ProductServer) GetAllCategoryList(ctx context.Context, empty *emptypb.Em
 	var categoryList []model.Category
 	internal.DB.Where(&model.Category{Level: 1}).Preload("SubCategory.SubCategory").Find(&categoryList)
 	var res pb.CategoriesRes
-	//var items []*pb.CategoryItemRes
-	//for _,c:=range categoryList{
-	//	items = append(items, ConvertCategoryModel2Pb(c))
-	//}
 	b, err := json.Marshal(categoryList)
 	if err != nil {
 		return nil, errors.New(custom_error.MarshalCategoryFailed)
 	}
-	//res.InfoResList=categoryList
 	res.CategoryJsonFormat = string(b)
 	return &res, nil
 }
 
 func (p ProductServer) GetSubCategory(ctx context.Context, req *pb.CategoriesReq) (*pb.SubCategoriesRes, error) {
 	var category model.Category
-	//var subItemList []*pb.CategoryItemRes
 	var res pb.SubCategoriesRes
 	r := internal.DB.First(&category, req.Id)
 	if r.RowsAffected < 1 {
@@ -85,14 +79,10 @@ func (p ProductServer) GetSubCategory(ctx context.Context, req *pb.CategoriesReq
 	var subCategoryList []model.Category
 	internal.DB.Where(&model.Category{ParentCategoryID: req.Id}).Preload(pre).Find(&subCategoryList)
 
-	//for _,c:=range subCategoryList{
-	//	subItemList = append(subItemList, ConvertCategoryModel2Pb(c))
-	//}
 	b, err := json.Marshal(subCategoryList)
 	if err != nil {
 		return nil, errors.New(custom_error.MarshalCategoryFailed)
 	}
-	//res.SubCategoryList=subItemList
 	res.CategoryJsonFormat = string(b)
 	return &res, nil
 }
