@@ -2,7 +2,7 @@ package internal
 
 import (
 	"fmt"
-	"github.com/i-coder-robot/mic-trainning-lessons/account_srv/model"
+	"github.com/i-coder-robot/mic-trainning-lessons-part2/model"
 	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -48,8 +48,26 @@ func InitDB() {
 	if err != nil {
 		panic("数据库连接失败:" + err.Error())
 	}
-	err = DB.AutoMigrate(&model.Account{})
+	err = DB.AutoMigrate(&model.Category{},
+		&model.Brand{}, &model.Advertise{},
+		&model.ProductCategoryBrand{}, &model.Product{})
 	if err != nil {
 		fmt.Println(err)
+	}
+}
+
+func MyPaging(pageNo, pageSize int) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if pageNo < 1 {
+			pageNo = 1
+		}
+		switch {
+		case pageSize > 100:
+			pageSize = 100
+		case pageSize < 1:
+			pageSize = 5
+		}
+		offset := (pageNo - 1) * pageSize
+		return db.Offset(offset).Limit(pageSize)
 	}
 }
