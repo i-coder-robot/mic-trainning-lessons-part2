@@ -4,7 +4,7 @@ import (
 	"errors"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/i-coder-robot/mic-trainning-lessons-part2/internal"
-	"github.com/i-coder-robot/mic-trainning-lessons/log"
+	"github.com/i-coder-robot/mic-trainning-lessons-part2/log"
 	"time"
 )
 
