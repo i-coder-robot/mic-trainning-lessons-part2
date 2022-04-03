@@ -1,9 +1,12 @@
 package model
 
 import (
+	"context"
 	"database/sql/driver"
 	"encoding/json"
+	"github.com/i-coder-robot/mic-trainning-lessons-part2/internal"
 	"gorm.io/gorm"
+	"strconv"
 	"time"
 )
 
@@ -77,4 +80,28 @@ func (myList MyList) Value() (driver.Value, error) {
 }
 func (myList MyList) Scan(v interface{}) error {
 	return json.Unmarshal(v.([]byte), myList)
+}
+
+func (p *Product) AfterCreate(tx *gorm.DB) (err error) {
+	esProduct := ESProduct{
+		ID:         p.ID,
+		CategoryID: p.CategoryID,
+		BrandID:    p.BrandID,
+		Selling:    p.Selling,
+		ShipFree:   p.IsShipFree,
+		IsNew:      p.IsNew,
+		IsPop:      p.IsPop,
+		Name:       p.Name,
+		SoldNum:    p.SoldNum,
+		FavNum:     p.FavNum,
+		Price:      p.Price,
+		RealPrice:  p.RealPrice,
+		ShortDesc:  p.ShortDesc,
+	}
+
+	_, err = internal.ESClient.Index().Index(GetIndex()).BodyJson(esProduct).Id(strconv.Itoa(int(p.ID))).Do(context.Background())
+	if err != nil {
+		return err
+	}
+	return nil
 }

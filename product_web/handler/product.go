@@ -17,10 +17,11 @@ import (
 var productClient pb.ProductServiceClient
 
 func init() {
-	addr := fmt.Sprintf("%s:%d", internal.AppConf.ProductSrvConfig.Host,
-		internal.AppConf.ProductSrvConfig.Port)
+	//addr := fmt.Sprintf("%s:%d", internal.AppConf.ProductSrvConfig.Host, internal.AppConf.ProductSrvConfig.Port)
+	addr := fmt.Sprintf("%s:%d", internal.AppConf.ConsulConfig.Host, internal.AppConf.ConsulConfig.Port)
+	dialAddr := fmt.Sprintf("consul://%s/product_srv?wait=14s&tag=happy", addr)
 	conn, err := grpc.Dial(
-		addr,
+		dialAddr,
 		grpc.WithInsecure(),
 		grpc.WithDefaultServiceConfig(`{"loadBalancingPolicy":"round_robin"}`),
 	)
@@ -79,7 +80,7 @@ func ProductListHandler(c *gin.Context) {
 		condition.IsNew = true
 	}
 
-	pageNoStr := c.DefaultQuery("pageNo", "0")
+	pageNoStr := c.DefaultQuery("pageNo", "1")
 	pageNo, err := strconv.Atoi(pageNoStr)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"msg": custom_error.ParamError})
@@ -88,7 +89,7 @@ func ProductListHandler(c *gin.Context) {
 
 	condition.PageNo = int32(pageNo)
 
-	pageSizeStr := c.DefaultQuery("pageSize", "0")
+	pageSizeStr := c.DefaultQuery("pageSize", "10")
 	pageSize, err := strconv.Atoi(pageSizeStr)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"msg": custom_error.ParamError})
