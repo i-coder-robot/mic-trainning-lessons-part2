@@ -7,6 +7,7 @@ import (
 	"github.com/i-coder-robot/mic-trainning-lessons-part2/internal/register"
 	"github.com/i-coder-robot/mic-trainning-lessons-part2/product_web/handler"
 	"github.com/i-coder-robot/mic-trainning-lessons-part2/util"
+	_ "github.com/mbobakov/grpc-consul-resolver"
 	"github.com/satori/go.uuid"
 	"go.uber.org/zap"
 	"os"
