@@ -1,5 +1,5 @@
-host: '192.168.0.106'
+host: '192.168.0.107'
 port: 8848
-namespace: '3a6aa0c4-b492-4624-bb59-16cc3f27416f'
+namespace: 'e510dbc5-89dc-4935-b87b-91ab4c648797'
 dataid: 'product.json'
 group: 'dev'
