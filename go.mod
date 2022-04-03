@@ -8,7 +8,7 @@ require (
 	github.com/go-redis/redis/v8 v8.11.4
 	github.com/google/uuid v1.1.2
 	github.com/hashicorp/consul/api v1.11.0
-	github.com/i-coder-robot/mic-trainning-lessons v0.0.0-20211204125101-289ecc3c06c6
+	github.com/mbobakov/grpc-consul-resolver v1.4.4
 	github.com/nacos-group/nacos-sdk-go v1.0.9
 	github.com/satori/go.uuid v1.2.0
 	github.com/spf13/viper v1.9.0
@@ -18,6 +18,8 @@ require (
 	gorm.io/driver/mysql v1.2.1
 	gorm.io/gorm v1.22.4
 )
+
+require github.com/olivere/elastic/v7 v7.0.32
 
 require (
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.18 // indirect
@@ -29,6 +31,7 @@ require (
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-errors/errors v1.0.1 // indirect
+	github.com/go-playground/form v3.1.4+incompatible // indirect
 	github.com/go-playground/locales v0.13.0 // indirect
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-playground/validator/v10 v10.4.1 // indirect
@@ -43,12 +46,15 @@ require (
 	github.com/hashicorp/serf v0.9.5 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.3 // indirect
-	github.com/jmespath/go-jmespath v0.0.0-20180206201540-c2b33e8439af // indirect
+	github.com/jmespath/go-jmespath v0.4.0 // indirect
+	github.com/josharian/intern v1.0.0 // indirect
+	github.com/jpillora/backoff v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.11 // indirect
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/lestrrat/go-file-rotatelogs v0.0.0-20180223000712-d3151e2a480f // indirect
 	github.com/lestrrat/go-strftime v0.0.0-20180220042222-ba3bf9c1d042 // indirect
 	github.com/magiconair/properties v1.8.5 // indirect
+	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-colorable v0.1.6 // indirect
 	github.com/mattn/go-isatty v0.0.12 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
@@ -67,9 +73,9 @@ require (
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
-	golang.org/x/net v0.0.0-20210503060351-7fd8e65b6420 // indirect
-	golang.org/x/sys v0.0.0-20210823070655-63515b42dcdf // indirect
-	golang.org/x/text v0.3.6 // indirect
+	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd // indirect
+	golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e // indirect
+	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/genproto v0.0.0-20210828152312-66f60bf46e71 // indirect
 	gopkg.in/ini.v1 v1.63.2 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect

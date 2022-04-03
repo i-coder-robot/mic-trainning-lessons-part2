@@ -21,5 +21,6 @@ type AppConfig struct {
 	ProductSrvConfig ProductSrvConfig `mapstructure:"product_srv" json:"product_srv"`
 	ProductWebConfig ProductWebConfig `mapstructure:"product_web" json:"product_web"`
 	JWTConfig        JWTConfig        `mapstructure:"jwt" json:"jwt"`
+	ESConfig         ESConfig         `mapstructure:"es" json:"es"`
 	Debug            bool             `mapstructure:"debug" json:"debug"`
 }

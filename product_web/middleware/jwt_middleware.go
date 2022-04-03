@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/i-coder-robot/mic-trainning-lessons/jwt_op"
+	"github.com/i-coder-robot/mic-trainning-lessons-part2/jwt_op"
 	"net/http"
 )
 
