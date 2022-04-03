@@ -2,16 +2,12 @@ package biz
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/i-coder-robot/mic-trainning-lessons-part2/custom_error"
 	"github.com/i-coder-robot/mic-trainning-lessons-part2/internal"
 	"github.com/i-coder-robot/mic-trainning-lessons-part2/model"
 	"github.com/i-coder-robot/mic-trainning-lessons-part2/proto/pb"
-	"github.com/olivere/elastic/v7"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -82,146 +78,146 @@ func (p ProductServer) UpdateProduct(ctx context.Context, req *pb.CreateProductI
 }
 
 func (p ProductServer) ProductList(ctx context.Context, req *pb.ProductConditionReq) (*pb.ProductsRes, error) {
-	//iDb := internal.DB.Model(model.Product{})
-	//var procudtList []model.Product
-	//var itemList []*pb.ProductItemRes
-	//var res pb.ProductsRes
-	//
-	//if req.IsPop {
-	//	iDb = iDb.Where("is_pop=?", req.IsPop)
-	//}
-	//
-	//if req.IsNew {
-	//	iDb = iDb.Where("is_new=?", req.IsNew)
-	//}
-	//
-	//if req.BrandId > 0 {
-	//	iDb = iDb.Where("brand_id=?", req.BrandId)
-	//}
-	//if req.KeyWord != "" {
-	//	iDb = iDb.Where("key_word like ?", "%"+req.KeyWord+"%")
-	//}
-	//if req.MinPrice > 0 {
-	//	iDb = iDb.Where("min_price>?", req.MinPrice)
-	//}
-	//if req.MaxPrice > 0 {
-	//	iDb = iDb.Where("max_price=?", req.MaxPrice)
-	//}
-	//
-	//if req.CategoryId > 0 {
-	//	var category model.Category
-	//	r := internal.DB.First(&category, req.CategoryId)
-	//	if r.RowsAffected == 0 {
-	//		return nil, errors.New(custom_error.CategoryNotExists)
-	//	}
-	//	var q string
-	//	if category.Level == 1 {
-	//		q = fmt.Sprintf("select id from category where parent_category_id in (select id from category WHERE parent_category_id=%d)", req.CategoryId)
-	//	} else if category.Level == 2 {
-	//		q = fmt.Sprintf("select id from category WHERE parent_category_id=%d", req.CategoryId)
-	//	} else if category.Level == 3 {
-	//		q = fmt.Sprintf("select id from category WHERE id=%d", req.CategoryId)
-	//	}
-	//	iDb = iDb.Where(fmt.Sprintf("category_id in %s", q))
-	//}
-	//var count int64
-	//iDb.Count(&count)
-	//fmt.Println(count)
-	//
-	//iDb.Joins("Category").Joins("Brand").Scopes(internal.MyPaging(int(req.PageNo), int(req.PageSize))).Find(&procudtList)
-	//for _, item := range procudtList {
-	//	res := ConvertProductModel2Pb(item)
-	//	itemList = append(itemList, res)
-	//}
-	//res.ItemList = itemList
-	//res.Total = int32(count)
-	//return &res, nil
-
-	//ES版本
+	iDb := internal.DB.Model(model.Product{})
+	var procudtList []model.Product
+	var itemList []*pb.ProductItemRes
 	var res pb.ProductsRes
-	q := elastic.NewBoolQuery()
-	localDB := internal.DB.Model(model.Product{})
-	if req.KeyWord != "" {
-		q = q.Must(elastic.NewMultiMatchQuery(req.KeyWord, "name", "short_desc"))
-	}
+
 	if req.IsPop {
-		q = q.Filter(elastic.NewTermQuery("is_pop", req.IsPop))
-	}
-	if req.IsNew {
-		q = q.Filter(elastic.NewTermQuery("is_new", req.IsNew))
+		iDb = iDb.Where("is_pop=?", req.IsPop)
 	}
 
-	if req.MinPrice > 0 {
-		q = q.Filter(elastic.NewRangeQuery("real_price").Gte(req.MinPrice))
-	}
-	if req.MaxPrice > 0 {
-		q = q.Filter(elastic.NewRangeQuery("real_price").Lte(req.MaxPrice))
+	if req.IsNew {
+		iDb = iDb.Where("is_new=?", req.IsNew)
 	}
 
 	if req.BrandId > 0 {
-		q = q.Filter(elastic.NewTermQuery("brand_id", req.BrandId))
+		iDb = iDb.Where("brand_id=?", req.BrandId)
+	}
+	if req.KeyWord != "" {
+		iDb = iDb.Where("key_word like ?", "%"+req.KeyWord+"%")
+	}
+	if req.MinPrice > 0 {
+		iDb = iDb.Where("min_price>?", req.MinPrice)
+	}
+	if req.MaxPrice > 0 {
+		iDb = iDb.Where("max_price=?", req.MaxPrice)
 	}
 
-	var subQuery string
-	categoryIdList := make([]interface{}, 0)
 	if req.CategoryId > 0 {
 		var category model.Category
-		if result := internal.DB.First(&category, req.CategoryId); result.RowsAffected == 0 {
-			return nil, status.Errorf(codes.NotFound, "商品分类不存在")
+		r := internal.DB.First(&category, req.CategoryId)
+		if r.RowsAffected == 0 {
+			return nil, errors.New(custom_error.CategoryNotExists)
 		}
-
+		var q string
 		if category.Level == 1 {
-			subQuery = fmt.Sprintf("select id from category where parent_category_id in (select id from category WHERE parent_category_id=%d)", req.CategoryId)
+			q = fmt.Sprintf("select id from category where parent_category_id in (select id from category WHERE parent_category_id=%d)", req.CategoryId)
 		} else if category.Level == 2 {
-			subQuery = fmt.Sprintf("select id from category WHERE parent_category_id=%d", req.CategoryId)
+			q = fmt.Sprintf("select id from category WHERE parent_category_id=%d", req.CategoryId)
 		} else if category.Level == 3 {
-			subQuery = fmt.Sprintf("select id from category WHERE id=%d", req.CategoryId)
+			q = fmt.Sprintf("select id from category WHERE id=%d", req.CategoryId)
 		}
-
-		var EsCategoryList []EsCategory
-		internal.DB.Model(model.Category{}).Raw(subQuery).Scan(&EsCategoryList)
-		for _, item := range EsCategoryList {
-			categoryIdList = append(categoryIdList, item.CategoryID)
-		}
-		q = q.Filter(elastic.NewTermsQuery("category_id", categoryIdList...))
+		iDb = iDb.Where(fmt.Sprintf("category_id in %s", q))
 	}
+	var count int64
+	iDb.Count(&count)
+	fmt.Println(count)
 
-	if req.PageNo < 1 {
-		req.PageNo = 1
+	iDb.Joins("Category").Joins("Brand").Scopes(internal.MyPaging(int(req.PageNo), int(req.PageSize))).Find(&procudtList)
+	for _, item := range procudtList {
+		res := ConvertProductModel2Pb(item)
+		itemList = append(itemList, res)
 	}
-
-	switch {
-	case req.PageSize > 100:
-		req.PageSize = 100
-	case req.PageSize < 1:
-		req.PageSize = 10
-	}
-	result, err := internal.ESClient.Search().Index(model.GetIndex()).Query(q).
-		From(int(req.PageNo)).Size(int(req.PageSize)).Do(context.Background())
-	if err != nil {
-		return nil, err
-	}
-
-	productIdList := make([]int32, 0)
-	res.Total = int32(result.Hits.TotalHits.Value)
-	for _, value := range result.Hits.Hits {
-		esProduct := model.ESProduct{}
-		_ = json.Unmarshal(value.Source, &esProduct)
-		productIdList = append(productIdList, esProduct.ID)
-	}
-
-	var products []model.Product
-	re := localDB.Preload("Category").Preload("Brand").Find(&products, productIdList)
-	if re.Error != nil {
-		return nil, re.Error
-	}
-
-	for _, item := range products {
-		itemRes := ModelToResponse(item)
-		res.ItemList = append(res.ItemList, itemRes)
-	}
-
+	res.ItemList = itemList
+	res.Total = int32(count)
 	return &res, nil
+
+	//ES版本
+	//var res pb.ProductsRes
+	//q := elastic.NewBoolQuery()
+	//localDB := internal.DB.Model(model.Product{})
+	//if req.KeyWord != "" {
+	//	q = q.Must(elastic.NewMultiMatchQuery(req.KeyWord, "name", "short_desc"))
+	//}
+	//if req.IsPop {
+	//	q = q.Filter(elastic.NewTermQuery("is_pop", req.IsPop))
+	//}
+	//if req.IsNew {
+	//	q = q.Filter(elastic.NewTermQuery("is_new", req.IsNew))
+	//}
+	//
+	//if req.MinPrice > 0 {
+	//	q = q.Filter(elastic.NewRangeQuery("real_price").Gte(req.MinPrice))
+	//}
+	//if req.MaxPrice > 0 {
+	//	q = q.Filter(elastic.NewRangeQuery("real_price").Lte(req.MaxPrice))
+	//}
+	//
+	//if req.BrandId > 0 {
+	//	q = q.Filter(elastic.NewTermQuery("brand_id", req.BrandId))
+	//}
+	//
+	//var subQuery string
+	//categoryIdList := make([]interface{}, 0)
+	//if req.CategoryId > 0 {
+	//	var category model.Category
+	//	if result := internal.DB.First(&category, req.CategoryId); result.RowsAffected == 0 {
+	//		return nil, status.Errorf(codes.NotFound, "商品分类不存在")
+	//	}
+	//
+	//	if category.Level == 1 {
+	//		subQuery = fmt.Sprintf("select id from category where parent_category_id in (select id from category WHERE parent_category_id=%d)", req.CategoryId)
+	//	} else if category.Level == 2 {
+	//		subQuery = fmt.Sprintf("select id from category WHERE parent_category_id=%d", req.CategoryId)
+	//	} else if category.Level == 3 {
+	//		subQuery = fmt.Sprintf("select id from category WHERE id=%d", req.CategoryId)
+	//	}
+	//
+	//	var EsCategoryList []EsCategory
+	//	internal.DB.Model(model.Category{}).Raw(subQuery).Scan(&EsCategoryList)
+	//	for _, item := range EsCategoryList {
+	//		categoryIdList = append(categoryIdList, item.CategoryID)
+	//	}
+	//	q = q.Filter(elastic.NewTermsQuery("category_id", categoryIdList...))
+	//}
+	//
+	//if req.PageNo < 1 {
+	//	req.PageNo = 1
+	//}
+	//
+	//switch {
+	//case req.PageSize > 100:
+	//	req.PageSize = 100
+	//case req.PageSize < 1:
+	//	req.PageSize = 10
+	//}
+	//result, err := internal.ESClient.Search().Index(model.GetIndex()).Query(q).
+	//	From(int(req.PageNo)).Size(int(req.PageSize)).Do(context.Background())
+	//if err != nil {
+	//	return nil, err
+	//}
+	//
+	//productIdList := make([]int32, 0)
+	//res.Total = int32(result.Hits.TotalHits.Value)
+	//for _, value := range result.Hits.Hits {
+	//	esProduct := model.ESProduct{}
+	//	_ = json.Unmarshal(value.Source, &esProduct)
+	//	productIdList = append(productIdList, esProduct.ID)
+	//}
+	//
+	//var products []model.Product
+	//re := localDB.Preload("Category").Preload("Brand").Find(&products, productIdList)
+	//if re.Error != nil {
+	//	return nil, re.Error
+	//}
+	//
+	//for _, item := range products {
+	//	itemRes := ModelToResponse(item)
+	//	res.ItemList = append(res.ItemList, itemRes)
+	//}
+	//
+	//return &res, nil
 }
 
 func ModelToResponse(product model.Product) *pb.ProductItemRes {

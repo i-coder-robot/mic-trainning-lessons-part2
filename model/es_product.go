@@ -1,5 +1,9 @@
 package model
 
+import "github.com/olivere/elastic/v7"
+
+var ESClient *elastic.Client
+
 type ESProduct struct {
 	ID         int32   `json:"id"`
 	BrandID    int32   `json:"brand_id"`

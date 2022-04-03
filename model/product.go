@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql/driver"
 	"encoding/json"
-	"github.com/i-coder-robot/mic-trainning-lessons-part2/internal"
 	"gorm.io/gorm"
 	"strconv"
 	"time"
@@ -99,7 +98,7 @@ func (p *Product) AfterCreate(tx *gorm.DB) (err error) {
 		ShortDesc:  p.ShortDesc,
 	}
 
-	_, err = internal.ESClient.Index().Index(GetIndex()).BodyJson(esProduct).Id(strconv.Itoa(int(p.ID))).Do(context.Background())
+	_, err = ESClient.Index().Index(GetIndex()).BodyJson(esProduct).Id(strconv.Itoa(int(p.ID))).Do(context.Background())
 	if err != nil {
 		return err
 	}
