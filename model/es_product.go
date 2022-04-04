@@ -28,10 +28,7 @@ func GetMapping() string {
 	productMapping := `
 	{
 		"mappings" : {
-			 "properties": { 
-				"id" : {
-					"type" : "integer"
-				},
+			 "properties": {
 				"brand_id" : {
 					"type" : "integer"
 				},
@@ -53,6 +50,7 @@ func GetMapping() string {
 				"name" : {
 					"type" : "text",
 					"analyzer":"ik_max_word"
+					"search_analyzer": "ik_smart"
 				},
 				"fav_num" : {
 					"type" : "integer"
@@ -69,6 +67,7 @@ func GetMapping() string {
 				"short_desc" : {
 					"type" : "text",
 					"analyzer":"ik_max_word"
+					"search_analyzer": "ik_smart"
 				}
 			}
 		}
