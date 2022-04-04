@@ -69,7 +69,7 @@ func TestProductServer_ProductList(t *testing.T) {
 	res, err := client.ProductList(context.Background(), &pb.ProductConditionReq{
 		PageNo:   1,
 		PageSize: 5,
-		KeyWord:  "猪排",
+		KeyWord:  "牛排",
 	})
 	if err != nil {
 		t.Fatal(err)
