@@ -28,6 +28,7 @@ func GetMapping() string {
 	productMapping := `
 	{
 		"mappings" : {
+			 "properties": { 
 				"id" : {
 					"type" : "integer"
 				},
@@ -69,6 +70,7 @@ func GetMapping() string {
 					"type" : "text",
 					"analyzer":"ik_max_word"
 				}
+			}
 		}
 	}`
 	return productMapping
