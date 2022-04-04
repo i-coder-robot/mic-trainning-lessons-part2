@@ -8,31 +8,33 @@ import (
 )
 
 func TestProductServer_CreateProduct(t *testing.T) {
-	for i := 0; i < 8; i++ {
-		res, err := client.CreateProduct(context.Background(), &pb.CreateProductItem{
-			Name:        fmt.Sprintf("黄金牛排%d", i),
-			Sn:          "123456789",
-			CategoryId:  22,
-			Price:       359.00,
-			RealPrice:   199.00,
-			ShortDesc:   "",
-			ProductDesc: "",
-			Images:      nil,
-			DescImages:  nil,
-			CoverImage:  "https://space.bilibili.com/375038855",
-			IsNew:       true,
-			IsPop:       true,
-			Selling:     true,
-			BrandId:     18,
-			FavNum:      6666,
-			SoldNum:     5432,
-			IsShipFree:  false,
-		})
-		if err != nil {
-			t.Fatal(err)
-		}
-		fmt.Println(res)
+	//for i := 0; i < 8; i++ {
+	//
+	//}
+	name := "飘香猪排"
+	res, err := client.CreateProduct(context.Background(), &pb.CreateProductItem{
+		Name:        fmt.Sprintf(name),
+		Sn:          "123456789",
+		CategoryId:  6,
+		Price:       499.00,
+		RealPrice:   199.00,
+		ShortDesc:   fmt.Sprintf(name),
+		ProductDesc: fmt.Sprintf(name),
+		Images:      nil,
+		DescImages:  nil,
+		CoverImage:  "https://space.bilibili.com/375038855",
+		IsNew:       true,
+		IsPop:       true,
+		Selling:     true,
+		BrandId:     10,
+		FavNum:      9666,
+		SoldNum:     5561,
+		IsShipFree:  false,
+	})
+	if err != nil {
+		t.Fatal(err)
 	}
+	fmt.Println(res)
 }
 
 func TestProductServer_UpdateProduct(t *testing.T) {
@@ -64,9 +66,10 @@ func TestProductServer_BatchGetProduct(t *testing.T) {
 }
 
 func TestProductServer_ProductList(t *testing.T) {
-	res, err := client.ProductList(context.Background(), &pb.ProdcutConditionReq{
-		PageNo:   2,
+	res, err := client.ProductList(context.Background(), &pb.ProductConditionReq{
+		PageNo:   1,
 		PageSize: 5,
+		KeyWord:  "猪排",
 	})
 	if err != nil {
 		t.Fatal(err)
