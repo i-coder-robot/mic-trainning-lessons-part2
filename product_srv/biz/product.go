@@ -36,7 +36,7 @@ func (p ProductServer) CreateProduct(ctx context.Context, req *pb.CreateProductI
 	item := ConvertReq2Model(model.Product{}, req, category, brand)
 
 	tx := internal.DB.Begin()
-	result := internal.DB.Save(&item)
+	result := tx.Save(&item)
 	if result.Error != nil {
 		tx.Rollback()
 		return nil, result.Error
