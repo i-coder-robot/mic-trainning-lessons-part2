@@ -77,6 +77,7 @@ func init() {
 	initFromNacos()
 	fmt.Println("初始化完成...")
 	InitRedis()
+	InitES()
 }
 
 type ViperConfig struct {
