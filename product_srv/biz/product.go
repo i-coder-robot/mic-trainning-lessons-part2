@@ -143,11 +143,6 @@ func (p ProductServer) ProductList(ctx context.Context, req *pb.ProductCondition
 	localDB := internal.DB.Model(model.Product{})
 	if req.KeyWord != "" {
 		q = q.Must(elastic.NewMultiMatchQuery(req.KeyWord, "name", "short_desc"))
-		//src, err := q.Source()
-		//if err != nil {
-		//	fmt.Println(err)
-		//}
-		//fmt.Println(src)
 	}
 	if req.IsPop {
 		q = q.Filter(elastic.NewTermQuery("is_pop", req.IsPop))
