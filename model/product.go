@@ -77,7 +77,7 @@ type MyList []string
 func (myList MyList) Value() (driver.Value, error) {
 	return json.Marshal(myList)
 }
-func (myList MyList) Scan(v interface{}) error {
+func (myList *MyList) Scan(v interface{}) error {
 	return json.Unmarshal(v.([]byte), myList)
 }
 
